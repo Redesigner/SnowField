@@ -1,0 +1,7 @@
+[gd_resource type="QuadMesh" load_steps=2 format=3 uid="uid://e224sq4v2505"]
+
+[ext_resource type="Material" uid="uid://ctr56gl7u0f63" path="res://particles/snow_particle/snow_particle_sprite.material" id="1_xvpac"]
+
+[resource]
+material = ExtResource("1_xvpac")
+size = Vector2(0.1, 0.1)

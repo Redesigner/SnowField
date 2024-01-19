@@ -1,0 +1,102 @@
+[gd_scene load_steps=15 format=3 uid="uid://dgudh46ev7s38"]
+
+[ext_resource type="PackedScene" uid="uid://0kqrhklxd51d" path="res://objects/player/player.tscn" id="1_5wf72"]
+[ext_resource type="PackedScene" uid="uid://dsa8vtae18hu6" path="res://objects/tree/tree1.tscn" id="2_sw4kq"]
+[ext_resource type="Material" uid="uid://blab1tc6dmxlt" path="res://materials/snow_shader/snow_shader.material" id="3_s63ts"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_vvqty"]
+turbidity = 250.0
+ground_color = Color(0.921569, 0.921569, 1, 1)
+
+[sub_resource type="Sky" id="Sky_uoj76"]
+sky_material = SubResource("PhysicalSkyMaterial_vvqty")
+
+[sub_resource type="Environment" id="Environment_2ithq"]
+background_mode = 2
+sky = SubResource("Sky_uoj76")
+glow_enabled = true
+glow_normalized = true
+glow_intensity = 1.0
+glow_strength = 0.4
+glow_bloom = 1.0
+glow_blend_mode = 0
+volumetric_fog_density = 0.0816
+volumetric_fog_albedo = Color(0.741176, 0.85098, 1, 1)
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_uef3g"]
+dof_blur_near_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_omlm4"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_lmqsc"]
+material = SubResource("StandardMaterial3D_omlm4")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tv3b3"]
+material = ExtResource("3_s63ts")
+size = Vector2(50, 50)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dm36f"]
+size = Vector3(50, 1, 50)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4cgtj"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_u3l0a"]
+material = SubResource("StandardMaterial3D_4cgtj")
+size = Vector2(50, 50)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_k0yj0"]
+viewport_path = NodePath("SubViewport")
+
+[node name="Test" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, 0.353553, -0.612372, 0, 0.866025, 0.5, 0.707107, -0.353553, 0.612372, 0, 0, 0)
+light_energy = 1.5
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_2ithq")
+camera_attributes = SubResource("CameraAttributesPractical_uef3g")
+
+[node name="Player" parent="." instance=ExtResource("1_5wf72")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.856275, 0)
+
+[node name="SnowFieldMask" type="MeshInstance3D" parent="Player"]
+layers = 2
+mesh = SubResource("SphereMesh_lmqsc")
+skeleton = NodePath("../../SubViewport")
+
+[node name="tree1" parent="." instance=ExtResource("2_sw4kq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 0)
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="FloorMesh" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("PlaneMesh_tv3b3")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_dm36f")
+
+[node name="SnowFieldMask" type="MeshInstance3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0405798, 0)
+layers = 2
+mesh = SubResource("PlaneMesh_u3l0a")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 5, 0)
+cull_mask = 1048574
+projection = 1
+size = 50.0
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_k0yj0")

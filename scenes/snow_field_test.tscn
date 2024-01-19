@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://fne51os3ue1n"]
+
+[ext_resource type="Material" uid="uid://yic1723ukckb" path="res://materials/snow_field/snow_field.material" id="1_hm7cn"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fs1sn"]
+material = ExtResource("1_hm7cn")
+subdivide_width = 64
+subdivide_depth = 64
+
+[node name="SnowFieldTest" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_fs1sn")

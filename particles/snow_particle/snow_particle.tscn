@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://d1av6g7vnxsl6"]
+
+[ext_resource type="Material" uid="uid://doqeejtusrg62" path="res://particles/snow_particle/snow_particle.material" id="1_27pcf"]
+[ext_resource type="QuadMesh" uid="uid://e224sq4v2505" path="res://particles/snow_particle/snow_particle_quad_mesh.tres" id="2_4fq1j"]
+
+[node name="SnowParticle" type="GPUParticles3D"]
+amount = 512
+lifetime = 3.0
+visibility_aabb = AABB(-16, -16, -16, 16, 16, 32)
+draw_order = 3
+process_material = ExtResource("1_27pcf")
+draw_pass_1 = ExtResource("2_4fq1j")
