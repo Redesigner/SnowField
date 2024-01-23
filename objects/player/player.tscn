@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://0kqrhklxd51d"]
+[gd_scene load_steps=11 format=3 uid="uid://0kqrhklxd51d"]
 
 [ext_resource type="Script" path="res://objects/player/player.gd" id="1_361py"]
 [ext_resource type="SpriteFrames" uid="uid://dh5krn1tygbkj" path="res://objects/player/player_spriteframes.tres" id="1_qt8r0"]
@@ -17,6 +17,13 @@ radius = 1.0
 material = ExtResource("5_msh60")
 radius = 1.0
 height = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tgnb4"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_4s2oh"]
+material = SubResource("StandardMaterial3D_tgnb4")
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_361py")
@@ -55,3 +62,7 @@ disabled = true
 visible = false
 mesh = SubResource("SphereMesh_ilhqo")
 skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ShowballCollisionShape/SnowballMesh"]
+layers = 2
+mesh = SubResource("SphereMesh_4s2oh")

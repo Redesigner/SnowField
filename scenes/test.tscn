@@ -1,8 +1,14 @@
-[gd_scene load_steps=15 format=3 uid="uid://dgudh46ev7s38"]
+[gd_scene load_steps=26 format=3 uid="uid://dgudh46ev7s38"]
 
 [ext_resource type="PackedScene" uid="uid://0kqrhklxd51d" path="res://objects/player/player.tscn" id="1_5wf72"]
 [ext_resource type="PackedScene" uid="uid://dsa8vtae18hu6" path="res://objects/tree/tree1.tscn" id="2_sw4kq"]
-[ext_resource type="Material" uid="uid://blab1tc6dmxlt" path="res://materials/snow_shader/snow_shader.material" id="3_s63ts"]
+[ext_resource type="Material" uid="uid://yic1723ukckb" path="res://materials/snow_field/snow_field.material" id="3_uoi02"]
+[ext_resource type="Script" path="res://scenes/FloorMesh.gd" id="4_l4lo6"]
+[ext_resource type="Material" uid="uid://blab1tc6dmxlt" path="res://materials/snow_shader/snow_shader.material" id="5_6jxoe"]
+[ext_resource type="Script" path="res://scenes/TextureRect.gd" id="5_7knpx"]
+[ext_resource type="Shader" path="res://scenes/test.gdshader" id="5_ctj4i"]
+[ext_resource type="Script" path="res://scenes/ViewportTextureAssignment.gd" id="6_gv5v5"]
+[ext_resource type="Material" uid="uid://b64ylswshplrl" path="res://materials/snow_field/snow_field_accumulation.material" id="6_ucadm"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_vvqty"]
 turbidity = 250.0
@@ -20,7 +26,7 @@ glow_intensity = 1.0
 glow_strength = 0.4
 glow_bloom = 1.0
 glow_blend_mode = 0
-volumetric_fog_density = 0.0816
+volumetric_fog_density = 0.0
 volumetric_fog_albedo = Color(0.741176, 0.85098, 1, 1)
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_uef3g"]
@@ -32,10 +38,13 @@ albedo_color = Color(1, 0, 0, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_lmqsc"]
 material = SubResource("StandardMaterial3D_omlm4")
+radius = 0.25
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_tv3b3"]
-material = ExtResource("3_s63ts")
+material = ExtResource("3_uoi02")
 size = Vector2(50, 50)
+subdivide_width = 512
+subdivide_depth = 512
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dm36f"]
 size = Vector3(50, 1, 50)
@@ -48,14 +57,29 @@ albedo_color = Color(0, 0, 0, 1)
 material = SubResource("StandardMaterial3D_4cgtj")
 size = Vector2(50, 50)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_k0yj0"]
-viewport_path = NodePath("SubViewport")
+[sub_resource type="PlaneMesh" id="PlaneMesh_rwf5d"]
+material = ExtResource("5_6jxoe")
+size = Vector2(200, 200)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nj0lv"]
+size = Vector3(1, 10, 50)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c8y4m"]
+shader = ExtResource("5_ctj4i")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_7jp6d"]
+viewport_path = NodePath("CurrentDisplacement")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_x583o"]
+viewport_path = NodePath("Accumulate2")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_bl8df"]
+viewport_path = NodePath("GaussianBlur")
 
 [node name="Test" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, 0.353553, -0.612372, 0, 0.866025, 0.5, 0.707107, -0.353553, 0.612372, 0, 0, 0)
-light_energy = 1.5
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -68,16 +92,47 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.856275, 0)
 [node name="SnowFieldMask" type="MeshInstance3D" parent="Player"]
 layers = 2
 mesh = SubResource("SphereMesh_lmqsc")
-skeleton = NodePath("../../SubViewport")
+skeleton = NodePath("../../CurrentDisplacement")
 
 [node name="tree1" parent="." instance=ExtResource("2_sw4kq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 4.2731)
+
+[node name="tree7" parent="." instance=ExtResource("2_sw4kq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.9833, 0, -4.48903)
+
+[node name="tree8" parent="." instance=ExtResource("2_sw4kq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.8113, 0, -12.0553)
+
+[node name="tree9" parent="." instance=ExtResource("2_sw4kq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.512, 0, -6.17607)
+
+[node name="tree10" parent="." instance=ExtResource("2_sw4kq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.1103, 0, -2.28501)
+
+[node name="tree11" parent="." instance=ExtResource("2_sw4kq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.5801, 0, 0.482079)
+
+[node name="tree2" parent="." instance=ExtResource("2_sw4kq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.3896, 0, -9.65586)
+
+[node name="tree3" parent="." instance=ExtResource("2_sw4kq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.3569, 0, -15.9931)
+
+[node name="tree5" parent="." instance=ExtResource("2_sw4kq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.9258, 0, 14.7472)
+
+[node name="tree6" parent="." instance=ExtResource("2_sw4kq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.7404, 0, 17.3483)
+
+[node name="tree4" parent="." instance=ExtResource("2_sw4kq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.609622, 0, -22.6439)
 
 [node name="Floor" type="StaticBody3D" parent="."]
 
 [node name="FloorMesh" type="MeshInstance3D" parent="Floor"]
 mesh = SubResource("PlaneMesh_tv3b3")
 skeleton = NodePath("../..")
+script = ExtResource("4_l4lo6")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
@@ -88,15 +143,115 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0405798, 0)
 layers = 2
 mesh = SubResource("PlaneMesh_u3l0a")
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="Floor2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("PlaneMesh_rwf5d")
 
-[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+[node name="Wall1" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall1"]
+shape = SubResource("BoxShape3D_nj0lv")
+
+[node name="Wall2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall2"]
+shape = SubResource("BoxShape3D_nj0lv")
+
+[node name="Wall3" type="StaticBody3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 22)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall3"]
+shape = SubResource("BoxShape3D_nj0lv")
+
+[node name="Wall4" type="StaticBody3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, -23)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall4"]
+shape = SubResource("BoxShape3D_nj0lv")
+
+[node name="CurrentDisplacement" type="SubViewport" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="CurrentDisplacement"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 5, 0)
 cull_mask = 1048574
 projection = 1
 size = 50.0
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="Accumulate1" type="SubViewport" parent="."]
+own_world_3d = true
+transparent_bg = true
+
+[node name="ColorRect" type="ColorRect" parent="Accumulate1"]
+material = SubResource("ShaderMaterial_c8y4m")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("6_gv5v5")
+viewport_path = NodePath("../../CurrentDisplacement")
+texture_name = "screen_texture"
+
+[node name="Accumulate2" type="SubViewport" parent="."]
+own_world_3d = true
+transparent_bg = true
+render_target_clear_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="Accumulate2"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+script = ExtResource("5_7knpx")
+viewport_path = NodePath("../../Accumulate1")
+
+[node name="GaussianBlur" type="SubViewport" parent="."]
+own_world_3d = true
+transparent_bg = true
+render_target_clear_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="GaussianBlur"]
+material = ExtResource("6_ucadm")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+script = ExtResource("6_gv5v5")
+viewport_path = NodePath("../../Accumulate2")
+texture_name = "screen_texture"
+
+[node name="TexturePreviews" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-texture = SubResource("ViewportTexture_k0yj0")
+
+[node name="TextureRect" type="TextureRect" parent="TexturePreviews"]
+offset_right = 512.0
+offset_bottom = 512.0
+scale = Vector2(0.25, 0.25)
+texture = SubResource("ViewportTexture_7jp6d")
+expand_mode = 3
+
+[node name="TextureRect2" type="TextureRect" parent="TexturePreviews"]
+offset_left = 128.0
+offset_right = 640.0
+offset_bottom = 512.0
+scale = Vector2(0.25, 0.25)
+texture = SubResource("ViewportTexture_x583o")
+expand_mode = 3
+
+[node name="TextureRect3" type="TextureRect" parent="TexturePreviews"]
+offset_left = 256.0
+offset_right = 768.0
+offset_bottom = 512.0
+scale = Vector2(0.25, 0.25)
+texture = SubResource("ViewportTexture_bl8df")
+expand_mode = 3
